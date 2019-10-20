@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-dhakallaxman23
-=======
-van
->>>>>>> 709d5c73f0c09c601b087ec147658e87b4fa8c60
+computer
