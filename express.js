@@ -5,19 +5,20 @@ const {
 } = require("./moduleformainfile")
 const app = express();
 const morgan = require('morgan');
-port = 3000
+port = 9090
 app.use(morgan('dev'));
 
 function checkFood(req, res, next) {
     console.log('req.brodway >>', req.broadway);
     req.broadway = 'i am brodway infosys nepal';
     next();
-}
+};
 
 function checkTicket(req, res, next) {
     console.log('brodway in request >>', req.broadway);
     next();
-}
+};
+app.use(checkFood);
 app.get('/read/*', function(req, res) {
     let news = req.url
     console.log(news)
@@ -25,32 +26,29 @@ app.get('/read/*', function(req, res) {
     console.log(req.url, arr)
     Read(arr[2], function(err, done) {
         if (err) {
-            res.json({ key: "error" })
+            res.json({ "result": "error" })
 
         } else {
-            res.json({ key: "success>> " + done })
+            res.json({ "result success content here": done })
 
         }
-    })
+    });
 
-})
-app.use(checkFood)
-app.use(checkTicket)
-app.get('/write/*', function(req, res) {
+});
+app.use(checkTicket);
+app.get('/write/*/*', function(req, res) {
     let news = req.url
-
     let arr = news.split("/")
     console.log(req.url, arr)
     write(arr[2], arr[3])
         .then(function(data) {
-            res.json({ key: "success" })
+            res.json({ "result": "success" })
 
         })
         .catch(function(data) {
-            res.json({ key: "error" })
+            res.json({ "result": "error" })
         })
-})
-
+});
 app.listen(port, function(err, done) {
     if (err) {
         console.log("error", err)
@@ -59,4 +57,4 @@ app.listen(port, function(err, done) {
         console.log('server listening at port ' + port);
         console.log('press CTRL +C to exit');
     }
-})
+});
