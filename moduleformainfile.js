@@ -1,5 +1,5 @@
 var fs = require("fs");
-
+//just module to read and write functions
 function write(filename, content) {
     return new Promise(function(resolve, reject) {
         fs.writeFile(filename, content, function(err, done) {

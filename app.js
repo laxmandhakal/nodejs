@@ -22,14 +22,14 @@ app.use('/review', authentication, authorization, commentRoute);
 app.use('/comment', commentRoute);
 app.use('/notification', commentRoute);
 
-app.use(function (req, res, next) {
+app.use(function(req, res, next) {
     console.log('application level middleware below routiing configureation');
     res.json({
         msg: "I am 404 Error Handler "
     })
 });
 
-app.listen(port, function (err, done) {
+app.listen(port, function(err, done) {
 
     if (err) {
         console.log('server listening failed');
