@@ -1,0 +1,19 @@
+html
+    head
+        title= title
+        link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css")
+
+    body.container
+        p= msg
+        form(action="auth/login",method="POST").form-group
+            label(for="username") Username
+            input(type="text",placeholder="Username",name="username").form-control
+            label(for="password") Password
+            input(type="password",placeholder="Password",name="password").form-control
+            br
+            input(type="submit", value="login").btn.btn-primary
+
+        p   Don't Have an account?
+        p  
+             a(href="/register") Register here
+                   
