@@ -40,7 +40,7 @@ app.use('/review', authentication, authorization, commentRoute);
 app.use('/comment', commentRoute);
 app.use('/notification', commentRoute);
 
-app.use(function (req, res, next) {
+app.use(function(req, res, next) {
     console.log('application level middleware below routiing configureation');
     // res.json({
     //     msg: "I am 404 Error Handler "
@@ -48,15 +48,15 @@ app.use(function (req, res, next) {
     next('404');
 });
 
-app.use(function (err, req, res, next) {
-    console.log('i am error handling middleware', err);
+app.use(function(err, req, res, next) {
+    console.log('i am error handling  middleware', err);
     res.json({
-        msg: 'from error handling middleware',
+        msg: 'from error handling middleware laxman',
         err: err
     })
 });
 
-app.listen(port, function (err, done) {
+app.listen(port, function(err, done) {
 
     if (err) {
         console.log('server listening failed');
