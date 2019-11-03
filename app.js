@@ -51,7 +51,7 @@ app.use(function(req, res, next) {
 app.use(function(err, req, res, next) {
     console.log('i am error handling  middleware', err);
     res.json({
-        msg: 'from error handling middleware laxman',
+        msg: 'from error handling middleware compur',
         err: err
     })
 });

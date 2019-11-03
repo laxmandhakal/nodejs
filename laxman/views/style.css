@@ -1,0 +1,25 @@
+* {
+    margin: 0%;
+    padding: 0%;
+}
+
+@keyframes ann {
+    0% {
+        background-color: green;
+        transform: scale(1, 1) translateY(80vh);
+    }
+    100% {
+        background-color: gold;
+        transform: translate(400%, 77vh) skew(10deg);
+    }
+}
+
+#lax {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    display: inline-block;
+    animation-name: ann;
+    animation-duration: 8s;
+    animation-iteration-count: infinite;
+    animation-direction: normal;
+    color: aqua;
+}

@@ -2,6 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 
+
 //sub route is defined here
 
 
@@ -15,6 +16,7 @@ router.get('/', function(req, res, next) {
 
 router.post('/', function(req, res, next) {
     console.log('here at post requrst >>>', req.body);
+    res.end("end / post")
 })
 router.delete('/', function(req, res, next) {
 
