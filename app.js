@@ -4,6 +4,7 @@ const app = express(); // now this app constant hold entire express framework
 var path = require('path');
 app.set('port', 9090)
 var port = app.get('port');
+require('./db');
 
 // template engine setup
 app.set('view-engine', require('pug'));
@@ -35,7 +36,7 @@ app.use('/file', express.static(path.join(__dirname, 'files'))); // external cli
 // app.use(authorization);
 
 app.use('/auth', authRoute);
-app.use('/user', authentication, userRoute);
+app.use('/user', userRoute);
 app.use('/review', authentication, authorization, commentRoute);
 app.use('/comment', commentRoute);
 app.use('/notification', commentRoute);
@@ -49,9 +50,9 @@ app.use(function(req, res, next) {
 });
 
 app.use(function(err, req, res, next) {
-    console.log('i am error handling  middleware', err);
+    console.log('i am error handling middleware', err);
     res.json({
-        msg: 'from error handling middleware compur',
+        msg: 'from error handling middleware',
         err: err
     })
 });
