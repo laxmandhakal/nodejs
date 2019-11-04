@@ -54,8 +54,9 @@ router.route('/:id')
                     })
                 }
                 // update
-                console.log('user is >>', user);
+                console.log(' logged in user is >>', req.loggedInUser);
                 var updatedMapUser = map_user(user, req.body);
+                updatedMapUser.updatedBy = req.loggedInUser.username;
                 updatedMapUser.save(function(err, done) {
                     if (err) {
                         return next(err)
@@ -65,6 +66,11 @@ router.route('/:id')
             })
     })
     .delete(function(req, res, next) {
+        if (req.loggedInUser.role !== 1) {
+            return next({
+                msg: 'you dont have access'
+            })
+        }
         UserModel.findById(req.params.id)
             .exec(function(err, user) {
                 if (err) {

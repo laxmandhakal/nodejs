@@ -15,6 +15,8 @@ function map_user_req(obj1, obj2) {
         obj1.address = obj2.address;
     if (obj2.status)
         obj1.status = obj2.status;
+    if (obj2.role)
+        obj1.role = obj2.role;
     return obj1;
 }
 module.exports = map_user_req;

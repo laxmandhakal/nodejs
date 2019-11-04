@@ -25,7 +25,12 @@ const UserSchema = new Schema({
         type: Boolean,
         default: true
     },
-    address: String
+    address: String,
+    role: {
+        type: Number,
+        default: 2 // 1 for admin, 2 for normal user, 3 visitor
+    },
+    updatedBy: String
 }, {
         timestamps: true
     });
