@@ -2,6 +2,7 @@ const ProductModel = require('./../models/product.model');
 
 const express = require('express');
 const router = express.Router();
+
 function map_product_req(product, productDetails) {
     if (productDetails.name)
         product.name = productDetails.name;
@@ -18,9 +19,9 @@ function map_product_req(product, productDetails) {
     if (productDetails.weight)
         product.weight = productDetails.weight;
     if (productDetails.tags)
-        product.tags = Array.isArray(productDetails.tags)
-            ? productDetails.tags
-            : productDetails.tags.split(',');
+        product.tags = Array.isArray(productDetails.tags) ?
+        productDetails.tags :
+        productDetails.tags.split(',');
     // TODO: check data type of boolean value
     product.warrenty = {};
     // // warrentyStatus: productDetails.warrentyStatus === 'true' ? true : false,
@@ -64,22 +65,22 @@ function map_product_req(product, productDetails) {
     return product;
 }
 
-module.exports = function (a, b, c) {
+module.exports = function(a, b, c) {
 
 
     router.route('/')
-        .get(function (req, res, next) {
+        .get(function(req, res, next) {
             ProductModel
                 .find({
                     user: req.loggedInUser._id
                 }, {
-                        name: 0,
-                        category: 0
-                    })
+                    name: 0,
+                    category: 0
+                })
                 .populate('user', {
                     username: 1
                 })
-                .exec(function (err, products) {
+                .exec(function(err, products) {
                     if (err) {
                         return next(err);
                     }
@@ -87,11 +88,11 @@ module.exports = function (a, b, c) {
                     res.status(200).json(products);
                 })
         })
-        .post(function (req, res, next) {
+        .post(function(req, res, next) {
             var newProduct = new ProductModel({});
             var newMappedProduct = map_product_req(newProduct, req.body);
             newMappedProduct.user = req.loggedInUser._id;
-            newMappedProduct.save(function (err, saved) {
+            newMappedProduct.save(function(err, saved) {
                 if (err) {
                     return next(err);
                 }
@@ -99,18 +100,18 @@ module.exports = function (a, b, c) {
             });
         });
     router.route('/search')
-        .get(function (req, res, next) {
+        .get(function(req, res, next) {
             var condition = {};
             var searchCondition = map_product_req(condition, req.query);
             search(searchCondition)
-                .then(function (data) {
+                .then(function(data) {
                     res.json(data);
                 })
-                .catch(function (err) {
+                .catch(function(err) {
                     next(err);
                 })
         })
-        .post(function (req, res, next) {
+        .post(function(req, res, next) {
             var condition = {};
             var searchCondition = map_product_req(condition, req.body);
             if (!req.body.warrentyStatus) {
@@ -121,29 +122,29 @@ module.exports = function (a, b, c) {
             }
             console.log('search condition >>', searchCondition);
             search(searchCondition)
-                .then(function (data) {
+                .then(function(data) {
                     res.json(data);
                 })
-                .catch(function (err) {
+                .catch(function(err) {
                     next(err);
                 })
         })
 
     router.route('/:id')
-        .get(function (req, res, next) {
+        .get(function(req, res, next) {
             ProductModel.findById(req.params.id)
-                .exec(function (err, product) {
+                .exec(function(err, product) {
                     if (err) {
                         return next(err);
                     }
                     res.status(200).json(product);
                 });
         })
-        .put(function (req, res, next) {
+        .put(function(req, res, next) {
             console.log('req.body <>>>', req.body.warrentyStatus)
-            console.log('req.body <>>>', typeof (req.body.warrentyStatus))
+            console.log('req.body <>>>', typeof(req.body.warrentyStatus))
             ProductModel.findById(req.params.id)
-                .exec(function (err, product) {
+                .exec(function(err, product) {
                     if (err) {
                         return next(err);
                     }
@@ -158,7 +159,7 @@ module.exports = function (a, b, c) {
                         message: req.body.ratingMsg,
                         point: req.body.ratingPoint
                     });
-                    updatedMapProduct.save(function (err, updated) {
+                    updatedMapProduct.save(function(err, updated) {
                         if (err) {
                             return next(err);
                         }
@@ -166,14 +167,14 @@ module.exports = function (a, b, c) {
                     })
                 })
         })
-        .delete(function (req, res, next) {
+        .delete(function(req, res, next) {
             ProductModel.findById(req.params.id)
-                .exec(function (err, product) {
+                .exec(function(err, product) {
                     if (err) {
                         return next(err);
                     }
                     if (product) {
-                        product.remove(function (err, removed) {
+                        product.remove(function(err, removed) {
                             if (err) {
                                 return next(err);
                             }
@@ -191,13 +192,12 @@ module.exports = function (a, b, c) {
 
 
     function search(query) {
-        return new Promise(function (resolve, reject) {
+        return new Promise(function(resolve, reject) {
             ProductModel.find(query)
-                .exec(function (err, result) {
+                .exec(function(err, result) {
                     if (err) {
                         reject(err);
-                    }
-                    else {
+                    } else {
                         resolve(result)
                     }
                 });

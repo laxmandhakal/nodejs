@@ -14,22 +14,15 @@ router.get('/', function(req, res, next) {
         msg: 'welcome to javascript'
     });
 });
-router.post('/all', function(req, res, next) {
-    UserModel.find({
-
-    }, function(err, user) {
-        if (err) {
-            return next(err);
-        }
-        if (user) {
-
-            res.status(200).json(user);
-        } else {
-            next({
-                msg: "invalid login credentials"
-            })
-        }
-    })
+router.get('/all', function(req, res, next) {
+    UserModel.find({})
+        .sort({ id: -1 })
+        .exec(function(err, user) {
+            if (err) {
+                return next(err);
+            }
+            res.json(user)
+        })
 })
 
 
