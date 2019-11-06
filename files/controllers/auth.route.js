@@ -8,32 +8,14 @@ const config = require('./../config');
 const map_user = require('./../helpers/user.map');
 
 
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
     res.render('login.pug', {
         title: 'javascript',
         msg: 'welcome to javascript'
     });
 });
-router.post('/all', function(req, res, next) {
-    UserModel.find({
 
-    }, function(err, user) {
-        if (err) {
-            return next(err);
-        }
-        if (user) {
-
-            res.status(200).json(user);
-        } else {
-            next({
-                msg: "invalid login credentials"
-            })
-        }
-    })
-})
-
-
-router.post('/', function(req, res, next) {
+router.post('/', function (req, res, next) {
     console.log('here at post requrst >>>', req.body);
     // db operation here
     // UserModel.findOne({
@@ -62,9 +44,9 @@ router.post('/', function(req, res, next) {
     //         next(err);
     //     })
     UserModel.findOne({
-            username: req.body.username
-        })
-        .exec(function(err, user) {
+        username: req.body.username
+    })
+        .exec(function (err, user) {
             if (err) {
                 return next(err);
             }
@@ -96,12 +78,12 @@ router.post('/', function(req, res, next) {
 
 
 
-router.get('/register', function(req, res, next) {
+router.get('/register', function (req, res, next) {
 
 
 });
 
-router.post('/register', function(req, res, next) {
+router.post('/register', function (req, res, next) {
     console.log('i am at post request of register', req.body);
     var newUser = new UserModel({});
     var newMappedUser = map_user(newUser, req.body);
@@ -109,7 +91,7 @@ router.post('/register', function(req, res, next) {
     // var obj = {name:'brodway'};
     // obj.name = 'infosys';
     newMappedUser.password = passwordHash.generate(req.body.password);
-    newMappedUser.save(function(err, done) {
+    newMappedUser.save(function (err, done) {
         if (err) {
             return next(err);
         }

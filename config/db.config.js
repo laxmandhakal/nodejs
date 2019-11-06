@@ -1,4 +1,4 @@
 module.exports = {
-    db_name: 'group17db',
+    db_name: 'laxman',
     conxnURL: 'mongodb://localhost:27017'
 }
