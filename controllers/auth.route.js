@@ -16,7 +16,7 @@ router.get('/', function(req, res, next) {
 });
 router.get('/all', function(req, res, next) {
     UserModel.find({})
-        .sort({ id: -1 })
+        .sort({ _id: -1 })
         .exec(function(err, user) {
             if (err) {
                 return next(err);

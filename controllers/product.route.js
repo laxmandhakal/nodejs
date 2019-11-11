@@ -1,5 +1,33 @@
 const ProductModel = require('./../models/product.model');
+const multer = require('multer');
+// const upload = multer({
+//     dest: './uploads/'
+// })
+const fs = require('fs');
+const path = require('path');
+const diskStorage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, './files/images')
+    },
+    filename: function(req, file, cb) {
+        cb(null, Date.now() + '-' + file.originalname);
+    }
+});
 
+function filter(req, file, cb) {
+    var mimeType = file.mimetype.split('/')[0];
+    if (mimeType == 'image') {
+        cb(null, true);
+    } else {
+        req.fileErr = true;
+        cb(null, false)
+    }
+
+}
+const upload = multer({
+    storage: diskStorage,
+    fileFilter: filter
+});
 const express = require('express');
 const router = express.Router();
 
@@ -41,11 +69,12 @@ function map_product_req(product, productDetails) {
     //         warrentyPeroid: productDetails.warrentyPeroid
     //     };
     // }
-
-    product.discount = {
-        discountedItem: productDetails.discountedItem === 'true' ? true : false,
-        discountType: productDetails.discountType,
-        discount: productDetails.discount
+    if (product.discount) {
+        product.discount = {
+            discountedItem: productDetails.discountedItem === 'true' ? true : false,
+            discountType: productDetails.discountType,
+            discount: productDetails.discount
+        }
     }
     if (productDetails.modelNo)
         product.modelNo = productDetails.modelNo;
@@ -61,7 +90,8 @@ function map_product_req(product, productDetails) {
         product.quantity = productDetails.quantity;
     if (productDetails.origin)
         product.origin = productDetails.origin;
-
+    if (productDetails.image)
+        product.image = productDetails.image;
     return product;
 }
 
@@ -74,8 +104,8 @@ module.exports = function(a, b, c) {
                 .find({
                     user: req.loggedInUser._id
                 }, {
-                    name: 0,
-                    category: 0
+                    name: 1,
+                    category: 1
                 })
                 .populate('user', {
                     username: 1
@@ -88,7 +118,32 @@ module.exports = function(a, b, c) {
                     res.status(200).json(products);
                 })
         })
-        .post(function(req, res, next) {
+        .post(upload.single('img'), function(req, res, next) {
+            console.log('req.body >>', req.body);
+            console.log('req.file', req.file);
+
+            if (req.fileErr) {
+                return next({
+                    msg: 'invalid file format'
+                })
+            }
+            if (req.file) {
+                // var mimeType = req.file.mimetype.split('/')[0];
+                // if (mimeType !== 'image') {
+                //    
+                //     fs.unlink(path.join(process.cwd(), 'files/images/' + req.file.filename), function (err, done) {
+                //         if (err) {
+                //             console.log('file removing failed');
+                //         } else {
+                //             console.log('file removed');
+                //         }
+                //     })
+                //     return next({
+                //         msg: 'invalid file format'
+                //     })
+                // }
+                req.body.image = req.file.filename;
+            }
             var newProduct = new ProductModel({});
             var newMappedProduct = map_product_req(newProduct, req.body);
             newMappedProduct.user = req.loggedInUser._id;
@@ -103,6 +158,7 @@ module.exports = function(a, b, c) {
         .get(function(req, res, next) {
             var condition = {};
             var searchCondition = map_product_req(condition, req.query);
+            console.log(searchCondition)
             search(searchCondition)
                 .then(function(data) {
                     res.json(data);
@@ -140,9 +196,15 @@ module.exports = function(a, b, c) {
                     res.status(200).json(product);
                 });
         })
-        .put(function(req, res, next) {
-            console.log('req.body <>>>', req.body.warrentyStatus)
-            console.log('req.body <>>>', typeof(req.body.warrentyStatus))
+        //"img"=key value
+        .put(upload.single('img'), function(req, res, next) {
+            console.log('req.body <>>>', req.body)
+            console.log('req.file <>>>', req.file)
+            if (req.fileErr) {
+                return next({
+                    msg: 'invalid file format'
+                });
+            }
             ProductModel.findById(req.params.id)
                 .exec(function(err, product) {
                     if (err) {
@@ -150,18 +212,33 @@ module.exports = function(a, b, c) {
                     }
                     if (!product) {
                         return next({
-                            msg: 'Product not found'
+                            msg: 'Product not  found here'
                         });
                     }
+                    var oldImage = product.image;
+                    if (req.file) {
+                        req.body.image = req.file.filename;
+                    }
                     let updatedMapProduct = map_product_req(product, req.body);
-                    updatedMapProduct.reviews.push({
-                        user: req.loggedInUser._id,
-                        message: req.body.ratingMsg,
-                        point: req.body.ratingPoint
-                    });
+                    if (req.body.ratingMsg && req.body.ratingPoint) {
+                        updatedMapProduct.reviews.push({
+                            user: req.loggedInUser._id,
+                            message: req.body.ratingMsg,
+                            point: req.body.ratingPoint
+                        });
+                    }
                     updatedMapProduct.save(function(err, updated) {
                         if (err) {
                             return next(err);
+                        }
+                        if (req.file) {
+                            fs.unlink(path.join(process.cwd(), 'files/images/' + oldImage), function(err, done) {
+                                if (err) {
+                                    console.log('file removed err ', err);
+                                } else {
+                                    console.log('removed');
+                                }
+                            });
                         }
                         res.status(200).json(updated);
                     })

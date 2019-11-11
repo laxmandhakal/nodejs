@@ -5,7 +5,7 @@ html
 
     body.container
         p= msg
-        form(method="POST").form-group
+        form(method="POST", action="/auth/").form-group
             label(for="username") Username
             input(type="text",placeholder="Username",name="username").form-control
             label(for="password") Password

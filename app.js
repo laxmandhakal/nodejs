@@ -44,7 +44,7 @@ app.use('/comment', commentRoute);
 app.use('/product', authentication, productRoute);
 
 app.use(function(req, res, next) {
-    console.log('application level middleware below routiing configureation');
+    console.log('application   middleware below routiing configuration');
     // res.json({
     //     msg: "I am 404 Error Handler "
     // })
@@ -96,4 +96,4 @@ app.listen(port, function(err, done) {
 // routing level middleware
 // third party middleware
 // inbuilt middleware
-// error handling middleware
+// error handling middlewarer
